@@ -136,4 +136,6 @@ source "drivers/staging/mi-reclaim/Kconfig"
 
 source "drivers/staging/cam-reclaim/Kconfig"
 
+source "drivers/staging/qcacld-3.0/Kconfig"
+
 endif # STAGING
