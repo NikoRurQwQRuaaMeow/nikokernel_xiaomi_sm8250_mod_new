@@ -9,11 +9,3 @@ config TOUCHSCREEN_NT36532_HOSTDL_SPI
 	  to your system by SPI bus.
 
 	  If unsure, say N.
-
-config TOUCHSCREEN_SUPPORT_NEW_GAME_MODE
-    tristate "Touch Support New Game Mode"
-    default n
-    help
-      Say Y here if the device support new game mode
-
-      If not support, say N.
