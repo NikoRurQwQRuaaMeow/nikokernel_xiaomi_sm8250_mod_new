@@ -1358,7 +1358,6 @@ config TOUCHSCREEN_SYNAPTICS_TCM
 	  To compile this driver as a module, choose M here: the
 	  module will be called synaptics_tcm.
 
-
 config INPUT_PRESS_NDT
 	bool "ndt"
 	depends on I2C
@@ -1374,6 +1373,8 @@ config TOUCHSCREEN_HIMAX_CHIPSET
 		report 10 touches at a time.
 
 		If unsure, say N.
+
+source "drivers/input/touchscreen/hxchipset/Kconfig"
 
 config TOUCHSCREEN_COMMON
 	bool "Common touchscreen interface to interact with userspace"
