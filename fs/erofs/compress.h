@@ -5,24 +5,30 @@
  */
 #ifndef __EROFS_FS_COMPRESS_H
 #define __EROFS_FS_COMPRESS_H
+
 #include "internal.h"
+
+enum {
+	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
+	Z_EROFS_COMPRESSION_RUNTIME_MAX
+};
+
 struct z_erofs_decompress_req {
 	struct super_block *sb;
 	struct page **in, **out;
+
 	unsigned short pageofs_out;
 	unsigned int inputsize, outputsize;
+
 	/* indicate the algorithm will be used for decompression */
 	unsigned int alg;
 	bool inplace_io, partial_decoding;
 };
-struct z_erofs_decompressor {
-	int (*decompress)(struct z_erofs_decompress_req *rq,
-			  struct list_head *pagepool);
-	char *name;
-};
+
 /* some special page->private (unsigned long, see below) */
 #define Z_EROFS_SHORTLIVED_PAGE		(-1UL << 2)
 #define Z_EROFS_PREALLOCATED_PAGE	(-2UL << 2)
+
 /*
  * For all pages in a pcluster, page->private should be one of
  * Type                         Last 2bits      page->private
@@ -42,6 +48,7 @@ struct z_erofs_decompressor {
  * For all managed pages, PG_private should be set with 1 extra refcount,
  * which is used for page reclaim / migration.
  */
+
 /*
  * short-lived pages are pages directly from buddy system with specific
  * page->private (no need to set PagePrivate since these are non-LRU /
@@ -51,14 +58,17 @@ static inline bool z_erofs_is_shortlived_page(struct page *page)
 {
 	if (page->private != Z_EROFS_SHORTLIVED_PAGE)
 		return false;
+
 	DBG_BUGON(page->mapping);
 	return true;
 }
+
 static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
 					      struct page *page)
 {
 	if (!z_erofs_is_shortlived_page(page))
 		return false;
+
 	/* short-lived pages should not be used by others at the same time */
 	if (page_ref_count(page) > 1) {
 		put_page(page);
@@ -69,15 +79,8 @@ static inline bool z_erofs_put_shortlivedpage(struct list_head *pagepool,
 	}
 	return true;
 }
-#define MNGD_MAPPING(sbi)	((sbi)->managed_cache->i_mapping)
-static inline bool erofs_page_is_managed(const struct erofs_sb_info *sbi,
-					 struct page *page)
-{
-	return page->mapping == MNGD_MAPPING(sbi);
-}
+
 int z_erofs_decompress(struct z_erofs_decompress_req *rq,
 		       struct list_head *pagepool);
-/* prototypes for specific algorithms */
-int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
-			    struct list_head *pagepool);
+
 #endif

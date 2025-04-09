@@ -664,7 +664,6 @@ static void LZ4HC_setExternalDict(
 	ctxPtr->nextToUpdate = ctxPtr->dictLimit;
 }
 
-
 static int LZ4_compressHC_continue_generic(
 	LZ4_streamHC_t *LZ4_streamHCPtr,
 	const char *source,
