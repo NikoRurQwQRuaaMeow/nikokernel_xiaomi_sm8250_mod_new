@@ -11,10 +11,9 @@
 #include <linux/of.h>
 #include <linux/version.h>
 
-#include "aw882xx_device.h"
-#include "aw882xx_dsp.h"
-#include "aw882xx_log.h"
-/*#include "aw882xx_afe.h"*/
+#include "../inc/aw882xx_device.h"
+#include "../inc/aw882xx_dsp.h"
+#include "../inc/aw882xx_log.h"
 
 static DEFINE_MUTEX(g_aw_dsp_msg_lock);
 static DEFINE_MUTEX(g_aw_dsp_lock);
