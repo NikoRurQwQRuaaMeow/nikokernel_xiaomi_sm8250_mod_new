@@ -255,10 +255,11 @@ else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT), dagu))
 	obj-y	+= cs35l41_k81/
 else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT), munch))
 	obj-y	+= tfa9874/
+else ifeq ($(TARGET_PRODUCT), $(filter $(TARGET_PRODUCT), pipa))
+	obj-y	+= aw882xx/
 else
 	obj-y	+= cs35l41/
 endif
-	obj-y	+= aw882xx/
 	obj-y	+= rouleur/
 	obj-y	+= wsa883x/
 	obj-y	+= sdm660_cdc/
