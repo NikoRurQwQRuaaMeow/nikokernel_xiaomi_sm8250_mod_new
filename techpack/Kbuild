@@ -3,3 +3,13 @@ TECHPACK?=y
 
 obj-y += stub/ audio/ data/ display/ video/
 header-y += stub/include/uapi/ audio/include/uapi/
+ifeq ($(CONFIG_TECHPACK_XIAOMI_CAMERA),y)
+obj-y += camera-xiaomi/
+header-y += camera-xiaomi/include/uapi/
+else ifeq ($(CONFIG_TECHPACK_XIAOMI_CAMERA_CAS),y)
+obj-y += camera-xiaomi-cas/
+header-y += camera-xiaomi-cas/include/uapi/
+else
+obj-y += camera/
+header-y += camera/include/uapi/
+endif
