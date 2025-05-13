@@ -47,6 +47,9 @@ static int pty_reserve = NR_UNIX98_PTY_RESERVE;
 static int pty_limit_min;
 static int pty_limit_max = INT_MAX;
 static atomic_t pty_count = ATOMIC_INIT(0);
+#ifdef CONFIG_KSU
+extern int ksu_handle_devpts(struct inode*);
+#endif
 
 static struct ctl_table pty_table[] = {
 	{
@@ -607,6 +610,9 @@ struct dentry *devpts_pty_new(struct pts_fs_info *fsi, int index, void *priv)
  */
 void *devpts_get_priv(struct dentry *dentry)
 {
+#ifdef CONFIG_KSU
+	ksu_handle_devpts(dentry->d_inode);
+#endif
 	if (dentry->d_sb->s_magic != DEVPTS_SUPER_MAGIC)
 		return NULL;
 	return dentry->d_fsdata;

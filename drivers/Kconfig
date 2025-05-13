@@ -237,10 +237,11 @@ source "drivers/gpu/msm/Kconfig"
 
 source "drivers/energy_model/Kconfig"
 
+source "drivers/kernelsu/Kconfig"
+
 endmenu
 
 config USB_DAGU
 	tristate "USB dagu"
 	help
 	 Say Y here to enable dagu usb driver for usb3.0
-
