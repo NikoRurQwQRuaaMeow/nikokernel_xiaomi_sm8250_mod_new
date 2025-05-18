@@ -6383,7 +6383,6 @@ struct task_struct *binder_buff_owner(struct binder_alloc *alloc)
 }
 #endif
 
-
 #define CREATE_TRACE_POINTS
 #include "binder_trace.h"
 
