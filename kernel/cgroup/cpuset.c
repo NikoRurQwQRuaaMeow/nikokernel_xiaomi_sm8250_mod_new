@@ -2129,11 +2129,6 @@ static void cpuset_fork(struct task_struct *task)
 {
 	if (task_css_is_root(task, cpuset_cgrp_id))
 		return;
-#ifdef CONFIG_PACKAGE_RUNTIME_INFO
-	if (current->pkg.migt.flag & MINOR_TASK)
-		set_cpus_allowed_ptr(task, &current->pkg.migt.cpus_allowed);
-	else
-#endif
 	set_cpus_allowed_ptr(task, &current->cpus_allowed);
 	task->mems_allowed = current->mems_allowed;
 }

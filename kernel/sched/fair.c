@@ -7970,14 +7970,6 @@ eas_not_ready:
 	return -1;
 }
 
-#ifdef CONFIG_PACKAGE_RUNTIME_INFO
-static __inline__ void wake_render(struct task_struct *p)
-{
-	if (is_render_thread(p))
-		current->pkg.migt.wake_render++;
-}
-#endif
-
 /*
  * select_task_rq_fair: Select target runqueue for the waking task in domains
  * that have the 'sd_flag' flag set. In practice, this is SD_BALANCE_WAKE,
@@ -8022,9 +8014,6 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
 #endif
 	if (static_branch_unlikely(&sched_energy_present)) {
 		rcu_read_lock();
-#ifdef CONFIG_PACKAGE_RUNTIME_INFO
-		wake_render(p);
-#endif
 
 		new_cpu = find_energy_efficient_cpu(p, prev_cpu, sync,
 						    sibling_count_hint);

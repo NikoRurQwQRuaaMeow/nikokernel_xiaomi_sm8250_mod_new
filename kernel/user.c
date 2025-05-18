@@ -20,9 +20,8 @@
 #include <linux/proc_fs.h>
 #include <linux/proc_ns.h>
 
-
 /*
- * userns count is 1 for root user, 1 for init_uts_ns,CONFIG_PACKAGE_RUNTIME_INFO
+ * userns count is 1 for root user, 1 for init_uts_ns,
  * and 1 for... ?
  */
 struct user_namespace init_user_ns = {
