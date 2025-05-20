@@ -31,9 +31,6 @@
 #include <asm/cacheflush.h>
 #include <linux/uaccess.h>
 #include <linux/highmem.h>
-#ifdef CONFIG_RE_KERNEL_FEATURE
-#include <linux/re_kernel.h>
-#endif
 #include "binder_alloc.h"
 #include "binder_trace.h"
 #ifdef CONFIG_MILLET
@@ -401,9 +398,6 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
 				int is_async,
 				int pid)
 {
-#ifdef CONFIG_RE_KERNEL_FEATURE
-	struct task_struct *proc_task = NULL;
-#endif
 	struct rb_node *n = alloc->free_buffers.rb_node;
 	struct binder_buffer *buffer;
 	size_t buffer_size;
@@ -436,24 +430,6 @@ static struct binder_buffer *binder_alloc_new_buf_locked(
 				alloc->pid, extra_buffers_size);
 		return ERR_PTR(-EINVAL);
 	}
-#ifdef CONFIG_REKERNEL
-	if ((is_async && (alloc->free_async_space < 3 * size)) ||
-			(alloc->free_async_space < WARN_AHEAD_SPACE)) {
-		rcu_read_lock();
-		proc_task = find_task_by_vpid(alloc->pid);
-		rcu_read_unlock();
-
-		if (proc_task != NULL) {
-			if (line_is_frozen(proc_task)) {
-				char binder_kmsg[PACKET_SIZE];
-				snprintf(binder_kmsg, sizeof(binder_kmsg),
-					"type=Binder,bindertype=free_buffer_full,oneway=1,from_pid=%d,from=%d,target_pid=%d,target=%d;",
-					current->pid, task_uid(current).val, proc_task->pid, task_uid(proc_task).val);
-				send_netlink_message(binder_kmsg, strlen(binder_kmsg));
-			}
-		}
-	}
-#endif
 #ifdef CONFIG_MILLET
 	if (is_async
 		&& (alloc->free_async_space

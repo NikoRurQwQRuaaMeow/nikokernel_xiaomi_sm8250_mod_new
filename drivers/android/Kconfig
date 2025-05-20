@@ -54,13 +54,6 @@ config ANDROID_BINDER_IPC_SELFTEST
 	  exhaustively with combinations of various buffer sizes and
 	  alignments.
 
-config RE_KERNEL_FEATURE
-	bool "Support Re-Kernel Tombstone"
-	depends on ANDROID_BINDER_IPC
-	---help---
-	  Make tombstone users get a better experience
-	  https://github.com/Sakion-Team/Re-Kernel
-
 config BINDER_OPT
 	bool "critical task opt of binder"
 	default y
