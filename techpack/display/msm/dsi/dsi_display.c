@@ -37,6 +37,22 @@
 
 DEFINE_MUTEX(dsi_display_clk_mutex);
 
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+struct dsi_display *primary_display;
+struct dsi_display *get_primary_display(void)
+{
+	return primary_display;
+}
+EXPORT_SYMBOL(get_primary_display);
+
+
+
+
+
+
+
+#endif
+
 extern int mi_disp_lhbm_attach_primary_dsi_display(struct dsi_display *display);
 
 static char dsi_display_primary[MAX_CMDLINE_PARAM_LEN];
@@ -6764,6 +6780,9 @@ int dsi_display_get_modes(struct dsi_display *display,
 	}
 
 exit:
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+	primary_display = display;
+#endif
 	*out_modes = display->modes;
 	rc = 0;
 

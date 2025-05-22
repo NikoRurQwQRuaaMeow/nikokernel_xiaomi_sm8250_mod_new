@@ -9,6 +9,9 @@ config TECHPACK_XIAOMI_CAMERA_CAS
 config TECHPACK_XIAOMI_CAS_PATCH
     bool "Xiaomi techpack cas camera patch"
 
+config TECHPACK_XIAOMI_FOD_PATCH
+    bool "Xiaomi techpack display FOD patch"
+
 source "techpack/data/Kconfig"
 
 endmenu

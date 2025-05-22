@@ -39,6 +39,8 @@ static u32 dither_matrix[DITHER_MATRIX_SZ] = {
 	15, 7, 13, 5, 3, 11, 1, 9, 12, 4, 14, 6, 0, 8, 2, 10
 };
 
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+#endif
 static const struct drm_prop_enum_list e_topology_name[] = {
 	{SDE_RM_TOPOLOGY_NONE,	"sde_none"},
 	{SDE_RM_TOPOLOGY_SINGLEPIPE,	"sde_singlepipe"},
@@ -83,6 +85,15 @@ static int sde_backlight_device_update_status(struct backlight_device *bd)
 	int rc = 0;
 
 	brightness = bd->props.brightness;
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+	// Backup FOD panel Brightness
+
+
+
+
+
+
+#endif
 
 	c_conn = bl_get_data(bd);
 	display = (struct dsi_display *) c_conn->display;
@@ -115,6 +126,11 @@ static int sde_backlight_device_update_status(struct backlight_device *bd)
 	bl_lvl = mult_frac(brightness, display->panel->bl_config.bl_max_level,
 			display->panel->bl_config.brightness_max_level);
 
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+
+
+#endif
+
 	if (!bl_lvl && brightness)
 		bl_lvl = 1;
 
@@ -135,6 +151,13 @@ static int sde_backlight_device_update_status(struct backlight_device *bd)
 				c_conn->display, bl_lvl);
 		c_conn->unset_bl_level = 0;
 		c_conn->mi_dimlayer_state.current_backlight = bl_lvl;
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+
+
+
+
+
+#endif
 	}
 
 	return rc;
@@ -955,6 +978,20 @@ static int _sde_connector_mi_dimlayer_hbm_fence(struct drm_connector *connector)
 		SDE_INFO("layer_aod_flag = %d\n", mi_cfg->layer_aod_flag);
 
 	last_layer_aod_flag = mi_cfg->layer_aod_flag;
+
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+	// FOD Overlay Send System event
+
+
+
+
+
+
+
+
+
+
+#endif
 
 	hbm_overlay = c_conn->mi_dimlayer_state.mi_dimlayer_type & MI_DIMLAYER_FOD_HBM_OVERLAY;
 	if (hbm_overlay) {

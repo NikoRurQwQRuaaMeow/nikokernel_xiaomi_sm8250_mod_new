@@ -748,4 +748,12 @@ int dsi_display_hbm_set_disp_param(struct drm_connector *connector,
 int dsi_display_esd_irq_ctrl(struct dsi_display *display,
 		bool enable);
 
+#ifdef CONFIG_TECHPACK_XIAOMI_FOD_PATCH
+struct dsi_display *get_primary_display(void);
+
+
+
+
+#endif
+
 #endif /* _DSI_DISPLAY_H_ */
