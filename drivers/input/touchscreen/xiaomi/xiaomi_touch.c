@@ -601,6 +601,40 @@ void xiaomi_touch_send_btn_tap_key(int status)
 }
 EXPORT_SYMBOL(xiaomi_touch_send_btn_tap_key);
 
+static int panel_FOD_mode_show(struct seq_file *seq, void *v)
+{
+	seq_printf(seq, "%d\n", touch_pdata->fod_enable);
+	return 0;
+}
+
+static int panel_FOD_mode_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, panel_FOD_mode_show, NULL);
+}
+
+static ssize_t panel_FOD_mode_write(struct file *file, const char __user *userbuf,
+		size_t count, loff_t *data)
+{
+	char buf[32] = {0};
+	int fod_value = 0;
+
+	copy_from_user(buf, userbuf, count);
+	kstrtouint(buf, 10, &fod_value);
+
+	// Touch_Fod_Enable mode: 10
+	touch_pdata->touch_data->setModeValue(10, !!fod_value);
+	touch_pdata->fod_enable = !!fod_value;
+	return count;
+}
+
+static const struct file_operations panel_FOD_mode_ops = {
+	.open       = panel_FOD_mode_open,
+	.read       = seq_read,
+	.write		= panel_FOD_mode_write,
+	.llseek     = seq_lseek,
+	.release    = single_release,
+};
+
 static int xiaomi_touch_probe(struct platform_device *pdev)
 {
 	int ret = 0;
@@ -684,6 +718,8 @@ static int xiaomi_touch_probe(struct platform_device *pdev)
 		goto sys_group_err;
 	}
 
+	/* Create panel_FOD_mode proc node */
+	proc_create("panel_FOD_mode", 0664, NULL, &panel_FOD_mode_ops);
 	MI_TOUCH_LOGI(1, "%s %s: over\n", MI_TAG, __func__);
 
 	return ret;

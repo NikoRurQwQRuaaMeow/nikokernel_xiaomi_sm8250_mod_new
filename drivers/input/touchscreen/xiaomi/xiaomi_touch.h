@@ -182,6 +182,7 @@ struct xiaomi_touch_pdata{
 #ifdef CONFIG_TOUCHSCREEN_NEW_PEN_CONNECT_STRATEGY
 	bool pen_active;
 #endif // CONFIG_TOUCHSCREEN_NEW_PEN_CONNECT_STRATEGY
+	bool fod_enable;
 };
 
 struct xiaomi_touch *xiaomi_touch_dev_get(int minor);
