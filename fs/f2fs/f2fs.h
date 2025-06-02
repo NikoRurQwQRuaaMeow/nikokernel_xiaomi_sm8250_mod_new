@@ -371,6 +371,12 @@ enum {
 	DPOLICY_IO_AWARE_MAX,
 };
 
+enum {
+	GC_IO_AWARE_DISABLE,	/* force to not be aware of IO */
+	GC_IO_AWARE_ENABLE,	/* force to be aware of IO */
+	GC_IO_AWARE_MAX,
+};
+
 struct discard_policy {
 	int type;			/* type of discard */
 	unsigned int min_interval;	/* used for candidates exist */
