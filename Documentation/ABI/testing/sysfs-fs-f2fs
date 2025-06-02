@@ -428,3 +428,9 @@ What:		/sys/fs/f2fs/<disk>/last_age_weight
 Date:		January 2023
 Contact:	"Ping Xiong" <xiongping1@xiaomi.com>
 Description:	When DATA SEPARATION is on, it controls the weight of last data block age.
+
+What:		/sys/fs/f2fs/<disk>/atgc_enabled
+Date:		Feb 2024
+Contact:	"Jinbao Liu" <liujinbao1@xiaomi.com>
+Description:	It represents whether ATGC is on or off. The value is 1 which
+               indicates that ATGC is on, and 0 indicates that it is off.
