@@ -428,3 +428,21 @@ What:		/sys/fs/f2fs/<disk>/last_age_weight
 Date:		January 2023
 Contact:	"Ping Xiong" <xiongping1@xiaomi.com>
 Description:	When DATA SEPARATION is on, it controls the weight of last data block age.
+
+What:		/sys/fs/f2fs/<disk>/atgc_enabled
+Date:		Feb 2024
+Contact:	"Jinbao Liu" <liujinbao1@xiaomi.com>
+Description:	It represents whether ATGC is on or off. The value is 1 which
+               indicates that ATGC is on, and 0 indicates that it is off.
+
+What:		/sys/fs/f2fs/<disk>/discard_io_aware
+Date:		November 2023
+Contact:	"Chao Yu" <chao@kernel.org>
+Description:	It controls to enable/disable IO aware feature for background discard.
+		By default, the value is 1 which indicates IO aware is on.
+
+What:		/sys/fs/f2fs/<disk>/gc_io_aware
+Date:		January 2024
+Contact:	"Jinbao Liu" <liujinbao1@xiaomi.com>
+Description:	It controls to enable/disable IO aware feature for background gc.
+		By default, the value is 1 which indicates IO aware is on.

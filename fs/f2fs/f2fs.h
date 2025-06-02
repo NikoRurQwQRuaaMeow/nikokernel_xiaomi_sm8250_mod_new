@@ -365,6 +365,18 @@ enum {
 	MAX_DPOLICY,
 };
 
+enum {
+	DPOLICY_IO_AWARE_DISABLE,	/* force to not be aware of IO */
+	DPOLICY_IO_AWARE_ENABLE,	/* force to be aware of IO */
+	DPOLICY_IO_AWARE_MAX,
+};
+
+enum {
+	GC_IO_AWARE_DISABLE,	/* force to not be aware of IO */
+	GC_IO_AWARE_ENABLE,	/* force to be aware of IO */
+	GC_IO_AWARE_MAX,
+};
+
 struct discard_policy {
 	int type;			/* type of discard */
 	unsigned int min_interval;	/* used for candidates exist */
@@ -391,6 +403,7 @@ struct discard_cmd_control {
 	unsigned int nr_discards;		/* # of discards in the list */
 	unsigned int max_discards;		/* max. discards to be issued */
 	unsigned int discard_granularity;	/* discard granularity */
+	unsigned int discard_io_aware;		/* io_aware policy */
 	unsigned int undiscard_blks;		/* # of undiscard blocks */
 	unsigned int next_pos;			/* next discard position */
 	atomic_t issued_discard;		/* # of issued discard */
@@ -3668,6 +3681,7 @@ int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
 void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
 int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
 void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
+int f2fs_reinit_atgc_curseg(struct f2fs_sb_info *sbi);
 void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
 void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
 void f2fs_get_new_segment(struct f2fs_sb_info *sbi,

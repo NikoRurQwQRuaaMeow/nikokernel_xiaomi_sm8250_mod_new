@@ -1158,7 +1158,10 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
 		dpolicy->min_interval = DEF_MIN_DISCARD_ISSUE_TIME;
 		dpolicy->mid_interval = DEF_MID_DISCARD_ISSUE_TIME;
 		dpolicy->max_interval = DEF_MAX_DISCARD_ISSUE_TIME;
-		dpolicy->io_aware = true;
+		if (dcc->discard_io_aware == DPOLICY_IO_AWARE_ENABLE)
+			dpolicy->io_aware = true;
+		else if (dcc->discard_io_aware == DPOLICY_IO_AWARE_DISABLE)
+			dpolicy->io_aware = false;
 		dpolicy->sync = false;
 		dpolicy->ordered = true;
 		if (utilization(sbi) > DEF_DISCARD_URGENT_UTIL) {
@@ -2129,6 +2132,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
 		return -ENOMEM;
 
 	dcc->discard_granularity = DEFAULT_DISCARD_GRANULARITY;
+	dcc->discard_io_aware = DPOLICY_IO_AWARE_ENABLE;
 	INIT_LIST_HEAD(&dcc->entry_list);
 	for (i = 0; i < MAX_PLIST_NUM; i++)
 		INIT_LIST_HEAD(&dcc->pend_list[i]);
@@ -2745,29 +2749,52 @@ static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
 	stat_inc_seg_type(sbi, curseg);
 }
 
-static void __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
+static int __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi, bool force)
 {
 	struct curseg_info *curseg = CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC);
+	int ret = 0;
 
-	if (!sbi->am.atgc_enabled)
-		return;
+	if (!sbi->am.atgc_enabled && !force)
+		return 0;
 
 	f2fs_down_read(&SM_I(sbi)->curseg_lock);
 
 	mutex_lock(&curseg->curseg_mutex);
 	down_write(&SIT_I(sbi)->sentry_lock);
 
-	get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC, CURSEG_COLD_DATA, SSR, 0);
+	ret = get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC,
+							CURSEG_COLD_DATA, SSR, 0);
 
 	up_write(&SIT_I(sbi)->sentry_lock);
 	mutex_unlock(&curseg->curseg_mutex);
 
 	f2fs_up_read(&SM_I(sbi)->curseg_lock);
-
+	return ret;
 }
+
 void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
 {
-	__f2fs_init_atgc_curseg(sbi);
+	(void)__f2fs_init_atgc_curseg(sbi, false);
+}
+
+int f2fs_reinit_atgc_curseg(struct f2fs_sb_info *sbi)
+{
+	int ret;
+
+	if (!test_opt(sbi, ATGC))
+		return 0;
+	if (sbi->am.atgc_enabled)
+		return 0;
+	if (le64_to_cpu(F2FS_CKPT(sbi)->elapsed_time) <
+			sbi->am.age_threshold)
+		return 0;
+
+	ret = __f2fs_init_atgc_curseg(sbi, true);
+	if (!ret) {
+		sbi->am.atgc_enabled = true;
+		f2fs_info(sbi, "reenabled age threshold GC");
+	}
+	return ret;
 }
 
 static void __f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int type)
